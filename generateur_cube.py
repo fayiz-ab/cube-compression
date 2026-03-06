@@ -62,19 +62,19 @@ def apply_D(state) :
     # Rotation horaire de la face du Bas (Down)
     cp, co, ep, eo = state
     
-    # Coins
+    # Coins 
     new_cp = list(cp)
+    new_cp[6] = cp[4]  # DRF reçoit DLF
+    new_cp[5] = cp[6]  # DRB reçoit DRF
+    new_cp[7] = cp[5]  # DLB reçoit DRB
     new_cp[4] = cp[7]  # DLF reçoit DLB
-    new_cp[5] = cp[4]  # DRB reçoit DLF
-    new_cp[6] = cp[5]  # DRF reçoit DRB
-    new_cp[7] = cp[6]  # DLB reçoit DRF
     
-    # Arêtes
+    # Arêtes  
     new_ep = list(ep)
-    new_ep[8] = ep[11]   # DF reçoit DL
-    new_ep[9] = ep[8]    # DR reçoit DF
-    new_ep[10] = ep[9]   # DB reçoit DR
-    new_ep[11] = ep[10]  # DL reçoit DB
+    new_ep[9] = ep[8]   # DR reçoit DF
+    new_ep[10] = ep[9]  # DB reçoit DR
+    new_ep[11] = ep[10] # DL reçoit DB
+    new_ep[8] = ep[11]  # DF reçoit DL
     
     # Pas de changement d'orientation pour le mouvement D
     return (tuple(new_cp), tuple(co), tuple(new_ep), tuple(eo))
@@ -83,26 +83,26 @@ def apply_R(state) :
     # Rotation horaire de la face Droite (Right)
     cp, co, ep, eo = state
     
-    # Coins
+    # Coins 
     new_cp = list(cp)
-    new_cp[2] = cp[1]  # URF reçoit URB
-    new_cp[5] = cp[2]  # DRB reçoit URF
+    new_cp[1] = cp[2]  # URB reçoit URF
+    new_cp[5] = cp[1]  # DRB reçoit URB
     new_cp[6] = cp[5]  # DRF reçoit DRB
-    new_cp[1] = cp[6]  # URB reçoit DRF
+    new_cp[2] = cp[6]  # URF reçoit DRF
     
-    # L'orientation des coins change : modulo 3 (+1 ou +2 selon le sens du basculement)
+    # Orientation des coins (alternance +1 / +2 pour conserver la parité modulo 3)
     new_co = list(co)
-    new_co[2] = (co[1] + 2) % 3  # URF
-    new_co[5] = (co[2] + 1) % 3  # DRF
-    new_co[6] = (co[5] + 2) % 3  # DRB
-    new_co[1] = (co[6] + 1) % 3  # URB
+    new_co[1] = (co[2] + 1) % 3  # URB
+    new_co[5] = (co[1] + 2) % 3  # DRB
+    new_co[6] = (co[5] + 1) % 3  # DRF
+    new_co[2] = (co[6] + 2) % 3  # URF
     
     # Arêtes
     new_ep = list(ep)
-    new_ep[4] = ep[1]  # FR reçoit UR
-    new_ep[9] = ep[4]  # DR reçoit FR
-    new_ep[7] = ep[9]  # BR reçoit DR
-    new_ep[1] = ep[7]  # UR reçoit BR
+    new_ep[7] = ep[1]  # BR reçoit UR
+    new_ep[9] = ep[7]  # DR reçoit BR
+    new_ep[4] = ep[9]  # FR reçoit DR
+    new_ep[1] = ep[4]  # UR reçoit FR
     
     # R ne retourne pas les arêtes
     return (tuple(new_cp), tuple(new_co), tuple(new_ep), tuple(eo))
@@ -120,10 +120,10 @@ def apply_L(state) :
     
     # Orientation des coins
     new_co = list(co)
-    new_co[4] = (co[3] + 1) % 3  # DLF
-    new_co[7] = (co[4] + 2) % 3  # DLB
-    new_co[0] = (co[7] + 2) % 3  # ULB
-    new_co[3] = (co[0] + 1) % 3  # ULF
+    new_co[4] = (co[3] + 2) % 3  # DLF reçoit ULF 
+    new_co[7] = (co[4] + 1) % 3  # DLB reçoit DLF 
+    new_co[0] = (co[7] + 2) % 3  # ULB reçoit DLB 
+    new_co[3] = (co[0] + 1) % 3  # ULF reçoit ULB 
     
     # Arêtes
     new_ep = list(ep)
@@ -146,12 +146,12 @@ def apply_F(state) :
     new_cp[3] = cp[4]  # ULF reçoit DLF
     new_cp[2] = cp[3]  # URF reçoit ULF
     
-    # Orientation des coins
+    # Orientation des coins 
     new_co = list(co)
-    new_co[6] = (co[2] + 2) % 3  # DRF
-    new_co[4] = (co[6] + 1) % 3  # DLF
-    new_co[3] = (co[4] + 1) % 3  # ULF
-    new_co[2] = (co[3] + 2) % 3  # URF
+    new_co[6] = (co[2] + 2) % 3  # DRF reçoit URF 
+    new_co[4] = (co[6] + 1) % 3  # DLF reçoit DRF 
+    new_co[3] = (co[4] + 2) % 3  # ULF reçoit DLF 
+    new_co[2] = (co[3] + 1) % 3  # URF reçoit ULF 
     
     # Arêtes
     new_ep = list(ep)
@@ -181,12 +181,12 @@ def apply_B(state) :
     new_cp[5] = cp[7]  # DRB reçoit DLB
     new_cp[1] = cp[5]  # URB reçoit DRB
     
-    # Orientation des coins
+    # Orientation des coins 
     new_co = list(co)
-    new_co[0] = (co[1] + 1) % 3  # ULB
-    new_co[7] = (co[0] + 2) % 3  # DLB
-    new_co[5] = (co[7] + 2) % 3  # DRB
-    new_co[1] = (co[5] + 1) % 3  # URB
+    new_co[0] = (co[1] + 1) % 3  # ULB reçoit URB 
+    new_co[7] = (co[0] + 2) % 3  # DLB reçoit ULB 
+    new_co[5] = (co[7] + 1) % 3  # DRB reçoit DLB 
+    new_co[1] = (co[5] + 2) % 3  # URB reçoit DRB 
     
     # Arêtes
     new_ep = list(ep)
@@ -195,7 +195,7 @@ def apply_B(state) :
     new_ep[7] = ep[10]  # BR reçoit DB
     new_ep[0] = ep[7]   # UB reçoit BR
     
-    # B retourne les 4 arêtes de la face arrière
+    # Orientation des arêtes (B retourne les 4 arêtes de la face arrière)
     new_eo = list(eo)
     new_eo[6] = 1 - eo[0]   # BL
     new_eo[10] = 1 - eo[6]  # DB
@@ -203,8 +203,6 @@ def apply_B(state) :
     new_eo[0] = 1 - eo[7]   # UB
 
     return (tuple(new_cp), tuple(new_co), tuple(new_ep), tuple(new_eo))
-
-
 
 
 # -- Gestion des mouvements --
